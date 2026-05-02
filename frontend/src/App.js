@@ -24,7 +24,7 @@ export default function App() {
     setChatMessages((prev) => [...prev, { role: "user", content: userMessage }]);
 
     try {
-      const response = await fetch("https://ai-advisor-production-6f7f.up.railway.app/analyze", {
+      const response = await fetch("https://ai-advisor-production-6f7f.up.railway.app/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -47,7 +47,7 @@ export default function App() {
     setChatMessages([]);
 
     try {
-      const response = await fetch("https://ai-advisor-production-6f7f.up.railway.app/chat", {
+      const response = await fetch("https://ai-advisor-production-6f7f.up.railway.app/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ problem }),
@@ -122,7 +122,9 @@ export default function App() {
                 ✅ Report saved to AWS S3: {results.s3_file}
               </p>
             )}
-            <ReactMarkdown remarkPlugins={[remarkGfm]} style={styles.reportContent}>{results.final}</ReactMarkdown>
+            <div style={{color: "#cbd5e1"}}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{results.final}</ReactMarkdown>
+            </div>
           </div>
         )}
 
