@@ -1,6 +1,6 @@
 # AI Business Advisor
 
-I built this project to show how multi-agent AI can solve real business problems. You describe your business situation, and 4 AI agents work together to give you a full modernization roadmap — in under 60 seconds.
+I built this project to show how multi-agent AI can solve real business problems. You describe your business situation, and 4 AI agents work together to give you a full modernization roadmap.
 
 ## What it actually does
 
