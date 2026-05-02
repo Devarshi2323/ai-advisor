@@ -115,7 +115,7 @@ export default function App() {
         )}
 
         {status === "done" && results.final && (
-          <div style={styles.report}>
+          <div style={styles.chatContainer}>
             <h2 style={styles.reportTitle}>📋 Final Report</h2>
             {results.s3_file && (
               <p style={{ color: "#22c55e", fontSize: "0.85rem", marginBottom: "1rem" }}>
