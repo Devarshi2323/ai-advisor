@@ -9,6 +9,8 @@ const agents = [
   { key: "final", label: "✅ Critic", desc: "Polishing the final report..." },
 ];
 
+const BACKEND_URL = "https://ai-advisor-production-6f7f.up.railway.app";
+
 export default function App() {
   const [problem, setProblem] = useState("");
   const [status, setStatus] = useState("idle");
@@ -25,7 +27,7 @@ export default function App() {
     setChatMessages((prev) => [...prev, { role: "user", content: userMessage }]);
 
     try {
-      const response = await fetch("https://ai-advisor-production-6f7f.up.railway.app/chat", {
+      const response = await fetch(`${BACKEND_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -48,19 +50,19 @@ export default function App() {
     setChatMessages([]);
 
     try {
-      const response = await fetch("https://ai-advisor-production-6f7f.up.railway.app/analyze", {
+      const response = await fetch(`${BACKEND_URL}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ problem }),
       });
       const data = await response.json();
-      
+
       for (let i = 0; i < agents.length; i++) {
         setActiveAgent(i);
         await new Promise((r) => setTimeout(r, 500));
         setResults((prev) => ({ ...prev, [agents[i].key]: data[agents[i].key] }));
       }
-      
+
       setResults((prev) => ({ ...prev, s3_file: data.s3_file }));
       setActiveAgent(null);
       setStatus("done");
@@ -116,14 +118,14 @@ export default function App() {
         )}
 
         {status === "done" && results.final && (
-          <div style={styles.chatContainer}>
+          <div style={styles.report}>
             <h2 style={styles.reportTitle}>📋 Final Report</h2>
             {results.s3_file && (
               <p style={{ color: "#22c55e", fontSize: "0.85rem", marginBottom: "1rem" }}>
                 ✅ Report saved to AWS S3: {results.s3_file}
               </p>
             )}
-            <div style={{color: "#cbd5e1"}}>
+            <div style={{ color: "#cbd5e1" }}>
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{results.final}</ReactMarkdown>
             </div>
           </div>
@@ -134,10 +136,11 @@ export default function App() {
             Something went wrong. Make sure your backend is running.
           </p>
         )}
-        {status === "done" && (
+
+        {status === "done" && results.final && (
           <div style={styles.chatContainer}>
             <h2 style={styles.agentTitle}>💬 Ask a Follow-up Question</h2>
-            
+
             <div style={styles.chatMessages}>
               {chatMessages.map((msg, index) => (
                 <div key={index} style={{
@@ -271,13 +274,6 @@ const styles = {
   reportTitle: {
     color: "#f8fafc",
     margin: "0 0 1rem 0",
-  },
-  reportContent: {
-    color: "#cbd5e1",
-    whiteSpace: "pre-wrap",
-    lineHeight: "1.7",
-    fontSize: "0.9rem",
-    margin: 0,
   },
   chatContainer: {
     marginTop: "2rem",
